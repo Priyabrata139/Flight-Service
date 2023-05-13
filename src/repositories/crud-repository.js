@@ -38,12 +38,17 @@ class CrudRepository {
         return response;
     }
 
-    async update(id, data) { // data -> {col: value, ....}
+    async update(data, id) { // data -> {col: value, ....}
+        
         const response = await this.model.update(data, {
             where: {
                 id: id
             }
         })
+        
+        if(!response[0]) {
+            throw new AppError('Not able to fund the resource', StatusCodes.NOT_FOUND);
+        }
         return response;
     }
 }
