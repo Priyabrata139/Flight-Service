@@ -21,6 +21,43 @@ async function createCity(data) {
     }
 }
 
+async function updateCity(data,id) {
+    try {
+        const city = await cityRepository.update(data,id);
+        return city;
+    } catch(error) {
+        
+        if(error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The city you requested to update is not present', error.statusCode);
+        }
+        else if (error.name=='SequelizeUniqueConstraintError') {
+            let explanation = [];
+            error.errors.forEach((err) => {
+                explanation.push(err.message);
+            });
+            throw new AppError(explanation, StatusCodes.BAD_REQUEST);
+        }
+        throw new AppError('Cannot create a new city object', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
+
+async function destroyCity(id) {
+    try {
+        const city = await cityRepository.destroy(id);
+        return city;
+    } catch(error) {
+        
+        if(error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The city you requested to delete is not present', error.statusCode);
+        }
+       
+        throw new AppError('Cannot create a new city object', StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+}
+
 module.exports = {
-    createCity
+    createCity,
+    destroyCity,
+    updateCity
 }
