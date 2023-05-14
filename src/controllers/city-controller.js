@@ -64,7 +64,7 @@ async function updateCity(req, res) {
     );
         SuccessResponse.data = city;
         return res
-                .status(StatusCodes.CREATED)
+                .status(StatusCodes.OK)
                 .json(SuccessResponse);
     } catch(error) {
         ErrorResponse.error = error;
