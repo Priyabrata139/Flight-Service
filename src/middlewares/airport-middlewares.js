@@ -28,6 +28,19 @@ function validateCreateRequest(req, res, next) {
     next();
 }
 
+
+function validateUpdateRequest(req, res, next) {
+    if(!req.body.name && !req.body.code && !req.body.address && !req.body.cityId) {
+        ErrorResponse.message = 'Something went wrong while updateing airplane';
+        ErrorResponse.error = new AppError(['name / code / address / cityId not found in the incoming request in the correct form'], StatusCodes.BAD_REQUEST);
+        return res
+                .status(StatusCodes.BAD_REQUEST)
+                .json(ErrorResponse);
+    }
+    next();
+}
+
 module.exports = {
-    validateCreateRequest
+    validateCreateRequest,
+    validateUpdateRequest
 }

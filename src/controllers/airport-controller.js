@@ -85,9 +85,40 @@ async function destroyAirport(req, res) {
     }
 }
 
+
+
+/**
+ * POST : /airportes/:id 
+ * req-body {name: Kalyani Airport,code:KLY,address:KAlyani West BEngal,cityId:3}
+ */
+async function updateAirport(req, res) {
+    try {
+        
+        const airport = await AirportService.updateAirport(
+            {
+                name:req.body.name,
+                code:req.body.code,
+                address:req.body.address,
+                cityId:req.body.cityId,
+            },
+            req.params.id
+        );
+        SuccessResponse.data = airport;
+        return res
+                .status(StatusCodes.OK)
+                .json(SuccessResponse);
+    } catch(error) {
+        
+        ErrorResponse.error = error;
+        return res
+                .status(error.statusCode)
+                .json(ErrorResponse);
+    }
+}
 module.exports = {
     createAirport,
     getAirports,
     getAirport,
-    destroyAirport
+    destroyAirport,
+    updateAirport
 }

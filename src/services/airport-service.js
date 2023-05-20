@@ -2,6 +2,8 @@ const { StatusCodes } = require('http-status-codes');
 
 const { AirportRepository } = require('../repositories');
 const AppError = require('../utils/errors/app-error');
+const { updateAirplane } = require('./airplane-service');
+const { message } = require('../utils/common/error-response');
 
 
 const airportRepository = new AirportRepository();
@@ -11,13 +13,14 @@ async function createAirport(data) {
         const airport = await airportRepository.create(data);
         return airport;
     } catch(error) {
-        if(error.name == 'SequelizeValidationError') {
+        if(error.name == 'SequelizeValidationError' || error.name == 'SequelizeUniqueConstraintError') {
             let explanation = [];
             error.errors.forEach((err) => {
                 explanation.push(err.message);
             });
             throw new AppError(explanation, StatusCodes.BAD_REQUEST);
         }
+        console.log(error);
         throw new AppError('Cannot create a new Airport object', StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
@@ -54,10 +57,32 @@ async function destroyAirport(id) {
         throw new AppError('Cannot destroy the airport', StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
+
+
+async function updateAirport(data,id) {
+    try {
+        const airport = await airportRepository.update(data,id);
+      
+        return airport;
+    } catch (error) {
+       
+        if (error.statusCode == StatusCodes.NOT_FOUND) {
+            throw new AppError('The Airport you requested to update is not present',error.statusCode);
+        }
+        if (error.name == 'SequelizeValidationError') {
+            let explanation=[];
+            error.errors.forEach(err => {
+                explanation.push(err.message);
+            });
+            throw new AppError(explanation, StatusCodes.INTERNAL_SERVER_ERROR);
+        }
+    }
+}
  
 module.exports = {
     createAirport,
     getAirports,
     getAirport,
-    destroyAirport
+    destroyAirport,
+    updateAirport
 }
