@@ -47,12 +47,12 @@ async function destroyCity(id) {
         const city = await cityRepository.destroy(id);
         return city;
     } catch(error) {
-        
+        console.log(error);
         if(error.statusCode == StatusCodes.NOT_FOUND) {
             throw new AppError('The city you requested to delete is not present', error.statusCode);
         }
        
-        throw new AppError('Cannot create a new city object', StatusCodes.INTERNAL_SERVER_ERROR);
+        throw new AppError('Cannot delete a new city object', StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 
