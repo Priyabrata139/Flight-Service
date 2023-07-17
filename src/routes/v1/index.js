@@ -16,5 +16,7 @@ router.use('/flights', flightRoutes);
 
 router.get('/info', InfoController.info);
 
+router.post('/info', InfoController.info);
+
 
 module.exports = router;
